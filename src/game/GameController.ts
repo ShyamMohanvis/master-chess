@@ -5,6 +5,14 @@ import { makeMove } from "../chess/Rules";
 import type {  Move, Position, PieceType  } from "../chess/Types";
 import { ChessBoardUI } from "../ui/ChessBoard";
 
+export interface SFXPlayer {
+  move(): void;
+  capture(): void;
+  check(): void;
+  gameOver(): void;
+  illegal(): void;
+}
+
 export interface UIState {
   selectedSquare: number | null;
   legalMoves: Move[];
@@ -26,6 +34,9 @@ export class GameController {
   private aiWorker: Worker;
   private aiMode: 'none' | 'easy' | 'medium' | 'hard' = 'hard';
   private isAIThinking: boolean = false;
+  private sfx: SFXPlayer | null = null;
+
+  public setSFX(sfx: SFXPlayer) { this.sfx = sfx; }
 
   // Pending promotion
   // private pendingPromotionMove: Move | null = null;
@@ -133,6 +144,7 @@ export class GameController {
   }
 
   private executeMove(move: Move) {
+    const isCapture = !!this.position.board[move.to];
     this.position = makeMove(this.position, move);
     this.saveHistory();
     
@@ -142,6 +154,20 @@ export class GameController {
     
     this.updateStatus();
     this.render();
+
+    // Play sound after status is known
+    if (this.sfx) {
+      if (this.uiState.isGameOver) {
+        this.sfx.gameOver();
+      } else if (this.uiState.checkSquare !== null) {
+        this.sfx.check();
+      } else if (isCapture) {
+        this.sfx.capture();
+      } else {
+        this.sfx.move();
+      }
+    }
+
     this.checkAITurn();
   }
 
