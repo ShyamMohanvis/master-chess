@@ -44,6 +44,19 @@ export class ChessBoardUI {
       const isLight = (file + rank) % 2 === 0;
       square.classList.add(isLight ? 'light' : 'dark');
 
+      if (file === 0) {
+        const rankLabel = document.createElement('span');
+        rankLabel.className = 'coord-rank';
+        rankLabel.textContent = (8 - rank).toString();
+        square.appendChild(rankLabel);
+      }
+      if (rank === 7) {
+        const fileLabel = document.createElement('span');
+        fileLabel.className = 'coord-file';
+        fileLabel.textContent = String.fromCharCode(97 + file).toUpperCase();
+        square.appendChild(fileLabel);
+      }
+
       square.addEventListener('click', () => {
         if (this.onSquareClick) this.onSquareClick(i);
       });

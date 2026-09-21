@@ -2,66 +2,119 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Chess Master</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Chess Master — Cyber Arena</title>
+    <meta name="description" content="Play chess against an AI opponent with adjustable difficulty. Features full chess rules including castling, en passant, and promotion." />
   </head>
   <body>
     <div id="app">
-      <!-- Main Menu -->
+
+      <!-- ═══════════════ MAIN MENU ═══════════════ -->
       <div id="main-menu" class="menu-container">
         <div class="menu-logo"></div>
-        <div class="menu-panels">
-          
-          <!-- VS PC Panel -->
-          <div class="menu-panel" id="panel-vs-pc">
-            <div class="panel-bg vs-pc-bg"></div>
-            <div class="difficulty-toggles">
-              <div id="btn-vs-computer-easy" class="diff-btn diff-easy active"></div>
-              <div id="btn-vs-computer-medium" class="diff-btn diff-medium"></div>
-              <div id="btn-vs-computer-hard" class="diff-btn diff-hard"></div>
-            </div>
-          </div>
-
-        </div>
-        <div id="btn-play" class="play-btn"></div>
-        <button id="btn-resume" style="display: none;">RESUME GAME</button>
+        <div id="btn-play" class="play-btn" role="button" tabindex="0" aria-label="Play"></div>
       </div>
 
+      <!-- ═══════════════ DIFFICULTY MODAL ═══════════════ -->
+      <div id="difficulty-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+          <div class="modal-crown">♛</div>
+          <h2>Select Difficulty</h2>
+          <div class="menu-options-layout">
+            <button id="diff-easy" class="btn btn-lg btn-diff-easy">Easy</button>
+            <button id="diff-medium" class="btn btn-lg btn-diff-medium">Medium</button>
+            <button id="diff-hard" class="btn btn-lg btn-diff-hard">Hard</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ GAME SCREEN ═══════════════ -->
       <div id="game-container" class="game-container" style="display: none;">
-        <div class="header">
-          <button id="btn-menu">Menu</button>
-          <div style="flex-grow: 1; text-align: center;">
-            <span id="status-text" class="status-bar">White's turn</span>
-          </div>
-          <div>
-            <button id="btn-undo">Undo</button>
-            <button id="btn-restart">Restart</button>
-          </div>
+        <div class="toolbar" id="game-header">
+          <button id="btn-menu" class="btn btn-sm btn-icon" aria-label="Open menu">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="btn-text">Menu</span>
+          </button>
+          
+          <span id="status-text" class="status-bar">● White's turn</span>
+          
+          <button id="btn-undo" class="btn btn-sm btn-icon" aria-label="Undo move">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M4 9h10a6 6 0 0 1 6 6v0a6 6 0 0 1-6 6H10" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+            <span class="btn-text">Undo</span>
+          </button>
+          <button id="btn-restart" class="btn btn-sm btn-icon" aria-label="Restart game">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M20 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L20 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            <span class="btn-text">Restart</span>
+          </button>
         </div>
 
         <div id="board-container"></div>
-      </div>
 
-      <!-- Promotion Modal -->
-      <div id="promotion-modal" class="modal-overlay" style="display: none;">
-        <div class="modal">
-          <h2>Choose Promotion</h2>
-          <div class="promotion-options">
-            <div id="promo-queen" class="promo-piece"></div>
-            <div id="promo-rook" class="promo-piece"></div>
-            <div id="promo-bishop" class="promo-piece"></div>
-            <div id="promo-knight" class="promo-piece"></div>
+        <div class="player-hud">
+          <div class="player-card">
+            <span class="player-icon">👤</span> 
+            <span class="player-name">YOU</span>
+            <span id="timer-white" class="timer">10:00</span>
+          </div>
+          <div class="player-card">
+            <span class="player-icon">🤖</span> 
+            <span class="player-name">AI</span>
+            <span id="timer-black" class="timer">10:00</span>
           </div>
         </div>
       </div>
 
-      <!-- Game Over Modal -->
+      <!-- ═══════════════ IN-GAME MENU MODAL ═══════════════ -->
+      <div id="ingame-menu-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+          <h2>Paused</h2>
+          <div class="menu-options-layout">
+            <button id="igm-resume" class="btn btn-lg">Resume</button>
+            <button id="igm-restart" class="btn btn-lg">Restart</button>
+            <button id="igm-howtoplay" class="btn btn-lg">How to Play</button>
+            <button id="igm-mainmenu" class="btn btn-lg">Main Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ HOW TO PLAY MODAL ═══════════════ -->
+      <div id="howtoplay-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+          <h2>How to Play</h2>
+          <div class="howtoplay-content">
+            <p><strong>Goal:</strong> Checkmate the opponent's king.</p>
+            <p><strong>Move:</strong> Click a piece, then click a highlighted square to move.</p>
+            <p><strong>Special moves:</strong> Castling, en passant, and pawn promotion are all supported.</p>
+            <p><strong>Undo:</strong> Reverts your last move and the AI's response.</p>
+            <p><strong>Timer:</strong> Each player has 10 minutes. If time runs out, that player loses.</p>
+          </div>
+          <div class="menu-options-layout">
+            <button id="htp-back" class="btn btn-lg">Back</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ PROMOTION MODAL ═══════════════ -->
+      <div id="promotion-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+          <h2>Promote Pawn</h2>
+          <div class="promotion-options">
+            <div id="promo-queen" class="promo-piece" role="button" tabindex="0" aria-label="Promote to Queen"></div>
+            <div id="promo-rook" class="promo-piece" role="button" tabindex="0" aria-label="Promote to Rook"></div>
+            <div id="promo-bishop" class="promo-piece" role="button" tabindex="0" aria-label="Promote to Bishop"></div>
+            <div id="promo-knight" class="promo-piece" role="button" tabindex="0" aria-label="Promote to Knight"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ GAME OVER MODAL ═══════════════ -->
       <div id="game-over-modal" class="modal-overlay" style="display: none;">
         <div class="modal">
           <h2 id="game-over-text">Checkmate</h2>
-          <div style="margin-top: 20px;">
-            <button id="btn-rematch">Rematch</button>
+          <div class="menu-options-layout">
+            <button id="btn-rematch" class="btn btn-lg">Rematch</button>
+            <button id="btn-go-menu" class="btn btn-lg">Main Menu</button>
           </div>
         </div>
       </div>

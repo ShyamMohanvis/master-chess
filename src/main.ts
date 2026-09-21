@@ -2,9 +2,10 @@ import './styles/board.css';
 import { ChessBoardUI } from './ui/ChessBoard';
 import { GameController } from './game/GameController';
 
-// ─────────────────────────────────────────────
-// Sound Effects (Web Audio API — no files needed)
-// ─────────────────────────────────────────────
+/* ═══════════════════════════════════════════
+   Sound Effects (Web Audio API — no files needed)
+   ═══════════════════════════════════════════ */
+
 const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
 let audioCtx: AudioContext | null = null;
 
@@ -29,114 +30,216 @@ function playTone(frequency: number, duration: number, type: OscillatorType = 's
   } catch (_) { /* silently fail if audio blocked */ }
 }
 
-export const SFX = {
+const SFX = {
   move() {
-    // Short woody "click" — two quick tones
     playTone(600, 0.06, 'triangle', 0.25);
     setTimeout(() => playTone(500, 0.08, 'triangle', 0.18), 30);
   },
   capture() {
-    // Heavier thud
     playTone(220, 0.1, 'sawtooth', 0.3);
     setTimeout(() => playTone(150, 0.2, 'sine', 0.2), 40);
   },
   check() {
-    // Alert ding-dong
     playTone(880, 0.15, 'sine', 0.4);
     setTimeout(() => playTone(660, 0.25, 'sine', 0.3), 120);
   },
   gameOver() {
-    // Descending fanfare
     [440, 370, 294, 220].forEach((f, i) => {
       setTimeout(() => playTone(f, 0.35, 'sine', 0.35), i * 180);
     });
   },
   illegal() {
-    // Low buzzer
     playTone(120, 0.15, 'sawtooth', 0.2);
   },
 };
 
-// ─────────────────────────────────────────────
-// Promotion piece images
-// ─────────────────────────────────────────────
-const setPromoPiece = (id: string, pieceKey: string) => {
-  const el = document.getElementById(id);
-  if (el) {
-    const baseUrl = import.meta.env.BASE_URL;
-    el.style.backgroundImage = `url('${baseUrl}assets/sprites/pieces/white_${pieceKey}.png')`;
-    el.style.backgroundSize = 'contain';
-    el.style.backgroundRepeat = 'no-repeat';
-    el.style.backgroundPosition = 'center';
-  }
-};
+/* ═══════════════════════════════════════════
+   Board + Controller (created once)
+   ═══════════════════════════════════════════ */
 
-setPromoPiece('promo-queen', 'queen');
-setPromoPiece('promo-rook', 'rook');
-setPromoPiece('promo-bishop', 'bishop');
-setPromoPiece('promo-knight', 'knight');
-
-// ─────────────────────────────────────────────
-// Board + controller
-// ─────────────────────────────────────────────
 const boardUI = new ChessBoardUI('board-container');
 const gameController = new GameController(boardUI);
-
-// Pass SFX to the controller
 gameController.setSFX(SFX);
 
-// ─────────────────────────────────────────────
-// UI Elements
-// ─────────────────────────────────────────────
-const mainMenu = document.getElementById('main-menu');
-const gameContainer = document.getElementById('game-container');
+/* ═══════════════════════════════════════════
+   DOM Elements
+   ═══════════════════════════════════════════ */
 
-const panelVsPc = document.getElementById('panel-vs-pc');
-const diffEasy   = document.getElementById('btn-vs-computer-easy');
-const diffMedium = document.getElementById('btn-vs-computer-medium');
-const diffHard   = document.getElementById('btn-vs-computer-hard');
-const btnPlay    = document.getElementById('btn-play');
-const btnMenu    = document.getElementById('btn-menu');
-const btnUndo    = document.getElementById('btn-undo');
-const btnRestart = document.getElementById('btn-restart');
-const btnRematch = document.getElementById('btn-rematch');
+const mainMenu       = document.getElementById('main-menu')!;
+const gameContainer   = document.getElementById('game-container')!;
+const diffModal       = document.getElementById('difficulty-modal')!;
+const ingameMenuModal = document.getElementById('ingame-menu-modal')!;
+const howtoplayModal  = document.getElementById('howtoplay-modal')!;
+const gameOverModal   = document.getElementById('game-over-modal')!;
 
-let selectedDifficulty: 'easy' | 'medium' | 'hard' = 'easy';
+// Main menu
+const btnPlay = document.getElementById('btn-play')!;
 
-function updateMenuUI() {
-  if (panelVsPc) panelVsPc.classList.add('selected');
-  if (diffEasy)   diffEasy.classList.toggle('active',   selectedDifficulty === 'easy');
-  if (diffMedium) diffMedium.classList.toggle('active', selectedDifficulty === 'medium');
-  if (diffHard)   diffHard.classList.toggle('active',   selectedDifficulty === 'hard');
+// Difficulty modal
+const diffEasy   = document.getElementById('diff-easy')!;
+const diffMedium = document.getElementById('diff-medium')!;
+const diffHard   = document.getElementById('diff-hard')!;
+
+// Game header
+const btnMenu    = document.getElementById('btn-menu')!;
+const btnUndo    = document.getElementById('btn-undo')!;
+const btnRestart = document.getElementById('btn-restart')!;
+
+// Game over modal
+const btnRematch = document.getElementById('btn-rematch')!;
+const btnGoMenu  = document.getElementById('btn-go-menu')!;
+
+// In-game menu modal
+const igmResume    = document.getElementById('igm-resume')!;
+const igmRestart   = document.getElementById('igm-restart')!;
+const igmHowToPlay = document.getElementById('igm-howtoplay')!;
+const igmMainMenu  = document.getElementById('igm-mainmenu')!;
+
+// How to play modal
+const htpBack = document.getElementById('htp-back')!;
+
+/* ═══════════════════════════════════════════
+   Navigation Helpers
+   ═══════════════════════════════════════════ */
+
+function showMainMenu() {
+  mainMenu.style.display      = 'flex';
+  gameContainer.style.display  = 'none';
+  diffModal.style.display      = 'none';
+  ingameMenuModal.style.display = 'none';
+  howtoplayModal.style.display = 'none';
+  gameOverModal.style.display  = 'none';
 }
-
-if (diffEasy)   diffEasy.addEventListener('click',   (e) => { e.stopPropagation(); selectedDifficulty = 'easy';   updateMenuUI(); });
-if (diffMedium) diffMedium.addEventListener('click', (e) => { e.stopPropagation(); selectedDifficulty = 'medium'; updateMenuUI(); });
-if (diffHard)   diffHard.addEventListener('click',   (e) => { e.stopPropagation(); selectedDifficulty = 'hard';   updateMenuUI(); });
 
 function showGame() {
-  if (mainMenu)      mainMenu.style.display      = 'none';
-  if (gameContainer) gameContainer.style.display = 'flex';
+  mainMenu.style.display      = 'none';
+  gameContainer.style.display  = 'flex';
+  diffModal.style.display      = 'none';
+  ingameMenuModal.style.display = 'none';
 }
 
-function showMenu() {
-  if (mainMenu)      mainMenu.style.display      = 'flex';
-  if (gameContainer) gameContainer.style.display = 'none';
-  updateMenuUI();
+function showDifficultyModal() {
+  diffModal.style.display = 'flex';
 }
 
-if (btnPlay) {
-  btnPlay.addEventListener('click', () => {
-    gameController.setAIMode(selectedDifficulty);
-    gameController.restart();
-    showGame();
-  });
+function hideDifficultyModal() {
+  diffModal.style.display = 'none';
 }
 
-if (btnMenu)    btnMenu.addEventListener('click',    () => showMenu());
-if (btnUndo)    btnUndo.addEventListener('click',    () => gameController.undo());
-if (btnRestart) btnRestart.addEventListener('click', () => gameController.restart());
-if (btnRematch) btnRematch.addEventListener('click', () => gameController.restart());
+function startGameWithDifficulty(difficulty: 'easy' | 'medium' | 'hard') {
+  hideDifficultyModal();
+  gameController.setAIMode(difficulty);
+  gameController.restart();
+  showGame();
+}
 
-// Initial state
-showMenu();
+/* ═══════════════════════════════════════════
+   Event Listeners — Main Menu
+   ═══════════════════════════════════════════ */
+
+btnPlay.addEventListener('click', () => showDifficultyModal());
+btnPlay.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    showDifficultyModal();
+  }
+});
+
+/* ═══════════════════════════════════════════
+   Event Listeners — Difficulty Modal
+   ═══════════════════════════════════════════ */
+
+diffEasy.addEventListener('click',   () => startGameWithDifficulty('easy'));
+diffMedium.addEventListener('click', () => startGameWithDifficulty('medium'));
+diffHard.addEventListener('click',   () => startGameWithDifficulty('hard'));
+
+/* ═══════════════════════════════════════════
+   Event Listeners — Game Header
+   ═══════════════════════════════════════════ */
+
+btnMenu.addEventListener('click', () => {
+  ingameMenuModal.style.display = 'flex';
+});
+
+btnUndo.addEventListener('click', () => gameController.undo());
+btnRestart.addEventListener('click', () => gameController.restart());
+
+/* ═══════════════════════════════════════════
+   Event Listeners — Game Over Modal
+   ═══════════════════════════════════════════ */
+
+btnRematch.addEventListener('click', () => {
+  gameOverModal.style.display = 'none';
+  gameController.restart();
+});
+
+btnGoMenu.addEventListener('click', () => {
+  gameOverModal.style.display = 'none';
+  showMainMenu();
+});
+
+/* ═══════════════════════════════════════════
+   Event Listeners — In-Game Menu Modal
+   ═══════════════════════════════════════════ */
+
+igmResume.addEventListener('click', () => {
+  ingameMenuModal.style.display = 'none';
+});
+
+igmRestart.addEventListener('click', () => {
+  ingameMenuModal.style.display = 'none';
+  gameController.restart();
+});
+
+igmHowToPlay.addEventListener('click', () => {
+  ingameMenuModal.style.display = 'none';
+  howtoplayModal.style.display = 'flex';
+});
+
+igmMainMenu.addEventListener('click', () => {
+  ingameMenuModal.style.display = 'none';
+  showMainMenu();
+});
+
+/* ═══════════════════════════════════════════
+   Event Listeners — How to Play Modal
+   ═══════════════════════════════════════════ */
+
+htpBack.addEventListener('click', () => {
+  howtoplayModal.style.display = 'none';
+  ingameMenuModal.style.display = 'flex';
+});
+
+/* ═══════════════════════════════════════════
+   Event Listeners — Keyboard (Accessibility)
+   ═══════════════════════════════════════════ */
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    // If difficulty modal is open, close it
+    if (diffModal.style.display === 'flex') {
+      hideDifficultyModal();
+    }
+    // If in-game menu is open, resume game
+    else if (ingameMenuModal.style.display === 'flex') {
+      ingameMenuModal.style.display = 'none';
+    }
+    // If how-to-play is open via in-game menu, go back to in-game menu
+    else if (howtoplayModal.style.display === 'flex') {
+      howtoplayModal.style.display = 'none';
+      if (gameContainer.style.display === 'flex') {
+        ingameMenuModal.style.display = 'flex';
+      }
+    }
+    // If game is active and no modal is open, open in-game menu
+    else if (gameContainer.style.display === 'flex' && gameOverModal.style.display !== 'flex') {
+      ingameMenuModal.style.display = 'flex';
+    }
+  }
+});
+
+/* ═══════════════════════════════════════════
+   Initial State
+   ═══════════════════════════════════════════ */
+
+showMainMenu();
