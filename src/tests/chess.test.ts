@@ -30,12 +30,6 @@ function playMoves(pos: Position, moves: [string, string, string?][]): Position 
   return current;
 }
 
-/** Count legal moves from a specific square */
-function countMovesFrom(pos: Position, sq: string): number {
-  const idx = getSquareIndex(sq);
-  return generateLegalMoves(pos).filter(m => m.from === idx).length;
-}
-
 /** Get all legal target squares from a specific square */
 function getTargetSquares(pos: Position, sq: string): string[] {
   const idx = getSquareIndex(sq);
@@ -93,7 +87,7 @@ describe('Pawn', () => {
 
   it('cannot move through an occupied square', () => {
     // Put a piece in front of the pawn
-    const pos = parseFEN('rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 1');
+    parseFEN('rnbqkbnr/pppppppp/8/8/8/4P3/PPPP1PPP/RNBQKBNR w KQkq - 0 1');
     // e2 pawn is gone, but e3 has a pawn — can't double push from non-start rank anyway
     // Instead test: place a pawn at e4 and try e2-e4 with blocker
     const pos2 = parseFEN('rnbqkbnr/pppppppp/8/8/4p3/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
@@ -110,7 +104,7 @@ describe('Pawn', () => {
 
   it('cannot capture straight ahead', () => {
     const pos = parseFEN('rnbqkbnr/pppppppp/8/8/4p3/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
-    const move = findMove(pos, 'e2', 'e3');
+    findMove(pos, 'e2', 'e3');
     // e3 is empty, should be able to move there (not a capture issue)
     // The real test: pawn blocked directly
     const pos2 = parseFEN('rnbqkbnr/pppp1ppp/8/8/8/4p3/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
