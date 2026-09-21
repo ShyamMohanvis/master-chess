@@ -82,28 +82,12 @@ body {
   filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
 }
 
-.play-btn {
-  width: min(30vw, 140px);
-  height: min(30vw, 140px);
-  background: url('/assets/sprites/but_play.png') center/contain no-repeat;
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: transform 0.2s ease, filter 0.2s ease;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .play-btn:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6));
-  }
-}
-
-.play-btn:active,
-.play-btn:focus-visible {
-  transform: scale(0.95);
-  outline: none;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+.btn-play-main {
+  font-size: clamp(1.2rem, 5vw, 1.8rem);
+  padding: 16px 48px;
+  letter-spacing: 2px;
+  margin-top: 20px;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4), 0 10px 30px rgba(0,0,0,0.8);
 }
 
 /* ═══════════════════════════════════════════
