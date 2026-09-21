@@ -24,7 +24,7 @@ export class GameController {
   private boardUI: ChessBoardUI;
 
   private aiWorker: Worker;
-  private aiMode: 'none' | 'easy' | 'hard' = 'hard';
+  private aiMode: 'none' | 'easy' | 'medium' | 'hard' = 'hard';
   private isAIThinking: boolean = false;
 
   // Pending promotion
@@ -53,7 +53,7 @@ export class GameController {
     this.aiWorker.onmessage = this.handleAIResponse.bind(this);
   }
 
-  public setAIMode(mode: 'none' | 'easy' | 'hard') {
+  public setAIMode(mode: 'none' | 'easy' | 'medium' | 'hard') {
     this.aiMode = mode;
     this.checkAITurn();
   }
@@ -74,7 +74,10 @@ export class GameController {
       const statusEl = document.getElementById('status-text');
       if (statusEl) statusEl.textContent = this.uiState.statusText;
 
-      const depth = this.aiMode === 'easy' ? 2 : 4;
+      let depth = 4;
+      if (this.aiMode === 'easy') depth = 2;
+      else if (this.aiMode === 'medium') depth = 3;
+
       this.aiWorker.postMessage({ position: this.position, depth });
     }
   }
