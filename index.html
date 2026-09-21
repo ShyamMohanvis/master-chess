@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Chess Master</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Main Menu -->
+      <div id="main-menu" class="menu-container">
+        <h1>CHESS MASTER</h1>
+        <button id="btn-vs-computer-easy">VS COMPUTER (EASY)</button>
+        <button id="btn-vs-computer-hard">VS COMPUTER (HARD)</button>
+        <button id="btn-2-player">2 PLAYER (LOCAL)</button>
+        <button id="btn-resume" style="display: none;">RESUME GAME</button>
+      </div>
+
+      <div id="game-container" class="game-container" style="display: none;">
+        <div class="header">
+          <button id="btn-menu">Menu</button>
+          <div style="flex-grow: 1; text-align: center;">
+            <span id="status-text" class="status-bar">White's turn</span>
+          </div>
+          <div>
+            <button id="btn-undo">Undo</button>
+            <button id="btn-restart">Restart</button>
+          </div>
+        </div>
+
+        <div id="board-container"></div>
+      </div>
+
+      <!-- Promotion Modal -->
+      <div id="promotion-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+          <h2>Choose Promotion</h2>
+          <div class="promotion-options">
+            <div id="promo-queen" class="promo-piece"></div>
+            <div id="promo-rook" class="promo-piece"></div>
+            <div id="promo-bishop" class="promo-piece"></div>
+            <div id="promo-knight" class="promo-piece"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Over Modal -->
+      <div id="game-over-modal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+          <h2 id="game-over-text">Checkmate</h2>
+          <div style="margin-top: 20px;">
+            <button id="btn-rematch">Rematch</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
