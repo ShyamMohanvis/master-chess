@@ -17,7 +17,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: url('/assets/sprites/bg_game.jpg') center/cover;
+  background: url('../assets/sprites/bg_game.jpg') center/cover;
   color: var(--text-color);
   display: flex;
   flex-direction: column;
@@ -64,7 +64,7 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 0 1px #444;
   user-select: none;
   overflow: hidden;
-  background-image: url('/assets/sprites/grid_8.png');
+  background-image: url('../assets/sprites/grid_8.png');
   background-size: cover;
 }
 
@@ -242,41 +242,84 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  background: url('../assets/sprites/bg_menu.jpg') center/cover;
+}
+
+.menu-logo {
+  width: min(80vw, 500px);
+  aspect-ratio: 1091 / 1015;
+  background: url('../assets/sprites/logo_menu.png') center/contain no-repeat;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+}
+
+.menu-panels {
+  display: flex;
   gap: 20px;
-  padding: 40px;
-  background: url('/assets/sprites/bg_menu.jpg') center/cover;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.8);
-  margin-top: 50px;
+  margin-bottom: 30px;
 }
 
-.menu-container h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  color: #fff;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+.menu-panel {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
-.menu-container button {
-  width: 250px;
-  padding: 15px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  background: #4CAF50;
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+.menu-panel:hover {
+  transform: translateY(-5px);
 }
 
-.menu-container button:hover {
-  background: #45a049;
-  transform: translateY(-2px);
+.menu-panel.selected {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));
 }
 
-.menu-container button#btn-resume {
-  background: #2196F3;
+.panel-bg {
+  width: 200px;
+  aspect-ratio: 546 / 426;
+  background-size: cover;
+  background-position: center;
 }
-.menu-container button#btn-resume:hover {
-  background: #1976D2;
+
+.vs-pc-bg { background-image: url('../assets/sprites/vs_pc_panel.png'); }
+.vs-man-bg { background-image: url('../assets/sprites/vs_man_panel.png'); }
+
+.difficulty-toggles {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+}
+
+.diff-btn {
+  width: 60px;
+  aspect-ratio: 218 / 110;
+  background-size: 200% 100%; /* 2 frames horizontally */
+  background-position: left center;
+  cursor: pointer;
+}
+
+.diff-btn.active {
+  background-position: right center;
+}
+
+.diff-easy { background-image: url('../assets/sprites/toggle_easy.png'); }
+.diff-medium { background-image: url('../assets/sprites/toggle_medium.png'); }
+.diff-hard { background-image: url('../assets/sprites/toggle_hard.png'); }
+
+.play-btn {
+  width: 120px;
+  height: 120px;
+  background: url('../assets/sprites/but_play.png') center/contain no-repeat;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.play-btn:hover {
+  transform: scale(1.1);
 }
 

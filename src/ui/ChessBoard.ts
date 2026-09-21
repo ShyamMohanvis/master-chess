@@ -67,7 +67,8 @@ export class ChessBoardUI {
   private createPieceElement(piece: Piece): HTMLElement {
     const el = document.createElement('div');
     el.className = 'piece';
-    el.style.backgroundImage = `url('/assets/sprites/pieces/${piece.color}_${piece.type}.png')`;
+    const baseUrl = import.meta.env.BASE_URL;
+    el.style.backgroundImage = `url('${baseUrl}assets/sprites/pieces/${piece.color}_${piece.type}.png')`;
     return el;
   }
 
@@ -136,7 +137,8 @@ export class ChessBoardUI {
       if (matchIdx !== -1) {
         const source = sources.splice(matchIdx, 1)[0];
         const el = source.el;
-        el.style.backgroundImage = `url('/assets/sprites/pieces/${dest.piece.color}_${dest.piece.type}.png')`;
+        const baseUrl = import.meta.env.BASE_URL;
+        el.style.backgroundImage = `url('${baseUrl}assets/sprites/pieces/${dest.piece.color}_${dest.piece.type}.png')`;
         this.moveElementToSquare(el, dest.index);
         this.pieceEls[dest.index] = el;
       } else {

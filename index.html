@@ -10,10 +10,26 @@
     <div id="app">
       <!-- Main Menu -->
       <div id="main-menu" class="menu-container">
-        <h1>CHESS MASTER</h1>
-        <button id="btn-vs-computer-easy">VS COMPUTER (EASY)</button>
-        <button id="btn-vs-computer-hard">VS COMPUTER (HARD)</button>
-        <button id="btn-2-player">2 PLAYER (LOCAL)</button>
+        <div class="menu-logo"></div>
+        <div class="menu-panels">
+          
+          <!-- VS PC Panel -->
+          <div class="menu-panel" id="panel-vs-pc">
+            <div class="panel-bg vs-pc-bg"></div>
+            <div class="difficulty-toggles">
+              <div id="btn-vs-computer-easy" class="diff-btn diff-easy active"></div>
+              <div id="btn-vs-computer-medium" class="diff-btn diff-medium"></div>
+              <div id="btn-vs-computer-hard" class="diff-btn diff-hard"></div>
+            </div>
+          </div>
+
+          <!-- 2 Player Panel -->
+          <div class="menu-panel" id="panel-vs-man">
+            <div class="panel-bg vs-man-bg"></div>
+          </div>
+
+        </div>
+        <div id="btn-play" class="play-btn"></div>
         <button id="btn-resume" style="display: none;">RESUME GAME</button>
       </div>
 
